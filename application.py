@@ -2,13 +2,13 @@ from os import path
 
 from flask import Flask
 
-import routes
+from routes import blueprints
 from models import db, DeviceStatus
 
 
 class AppConfig:
     use_sqlite = True
-    reset_db = True
+    reset_db = False
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
@@ -21,6 +21,9 @@ config = AppConfig()
 application = Flask(__name__)
 application.config.from_object(config)
 db.init_app(application)
+
+for blueprint in blueprints:
+    application.register_blueprint(blueprint)
 
 if config.reset_db:
     with application.app_context():
