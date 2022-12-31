@@ -10,6 +10,7 @@ class Device(db.Model):
 
     status = db.relationship('DeviceStatus', backref='devices')
     tasks = db.relationship('Task', backref='device')
+    properties = db.relationship('DeviceProperty', backref='device')
 
 
 class DeviceStatus(db.Model):
@@ -17,6 +18,14 @@ class DeviceStatus(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     short_name = db.Column(db.String(16), nullable=False)
     long_name = db.Column(db.String(64), nullable=False)
+
+
+class DeviceProperty(db.Model):
+    """Like a spec or something"""
+    id = db.Column(db.Integer(), primary_key=True)
+    device_id = db.Column(db.Integer, db.ForeignKey('device.id'))
+    key = db.Column(db.String(16), nullable=True)
+    value = db.Column(db.String(64), nullable=False)
 
 
 class Operation(db.Model):
