@@ -10,7 +10,11 @@ bluep = Blueprint('device', __name__, url_prefix='/device/')
 
 @bluep.get('create')
 def create_device_form():
-    return render_template('device_intake.html')
+    if 'copy-id' in request.args:
+        return render_template('device_intake.html',
+                               copy_device=Device.query.filter_by(id=request.args['copy-id']).first())
+    else:
+        return render_template('device_intake.html', copy_device=None)
 
 
 @bluep.post('create')
@@ -41,7 +45,7 @@ def create_device_submit():
         db.session.add(device_property)
     db.session.commit()
 
-    return render_template('device_created.html', serial_no=new_serial_no)
+    return render_template('device_created.html', device=new_device)
 
 
 @bluep.get('search')

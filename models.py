@@ -5,7 +5,7 @@ db = SQLAlchemy()
 
 class Device(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    serial_no = db.Column(db.String(32), nullable=False)
+    serial_no = db.Column(db.String(32), nullable=False, unique=True)
     status_id = db.Column(db.Integer(), db.ForeignKey('device_status.id'))
 
     status = db.relationship('DeviceStatus', backref='devices')

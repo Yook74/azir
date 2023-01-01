@@ -4,35 +4,42 @@
     <form action="create" method="post">
         <label for="serialNo" class="form-control">Identifier (Service Tag/Serial Number)</label>
         <input type="text" id="serialNo" class="form-control" placeholder="Optional" name="serial-number">
-        <fieldset id="properties">
+        <fieldset id="properties" class="mt-2">
             <legend>Properties</legend>
-            <label for="key-1" class="form-control">Key 1</label>
-            <input type="text" id="key-1" class="form-control" name="property">
-            <label for="value-1" class="form-control">Value 1</label>
-            <input type="text" id="value-1" class="form-control" name="property">
-        </fieldset><br><br>
-        <button type="button" class="btn btn-secondary" id="add-property">+ Add Property</button>
-        <br><br>
+        </fieldset>
+        <button type="button" class="btn btn-secondary" id="add-property">+ Add Property</button><br>
         <button type="submit" class="btn btn-primary mt-2">Create device</button>
     </form>
 {% endblock %}
 
 {% block scripts %}
     <script>
-        let counter = 1;
+        let counter = 0;
 
-        $('#add-property').on('click', () => {
-            {#console.log($("#properties").lastElementChild);#}
-            {#console.log($("#properties > input"));#}
+        function addProperty(key, value){
             counter++;
-            const num = counter;
-            const key = `key-${num}`;
-            const value = `value-${num}`;
-            const newProperty = `<label for=${key} class="form-control">Key ${num}</label>
-            <input type="text" id=${key} class="form-control" name="property">
-            <label for=${value} class="form-control">Value ${num}</label>
-            <input type="text" id=${value} class="form-control" name="property">`
-            $("#properties").append(newProperty);
-        })
+            const keyId = `key-${counter}`;
+            const valueId = `value-${counter}`;
+            $('#properties').append(`
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <label for="${keyId}" class="form-label">Property Key</label>
+                        <input class="form-control" name="property" id="${keyId}" value="${key}">
+                    </div>
+                    <div class="col-9">
+                        <label for="${valueId}" class="form-label">Property Value</label>
+                        <input class="form-control" name="property" id="${valueId}" value="${value}">
+                    </div>
+                </div>
+            `)
+        }
+
+        {% if copy_device %}{% for property in copy_device.properties %}
+        addProperty("{{ property.key }}", "{{ property.value }}");
+        {% endfor %}{% else %}
+        addProperty("", "");
+        {% endif %}
+
+        $('#add-property').click(() => addProperty("", ""))
     </script>
 {% endblock %}

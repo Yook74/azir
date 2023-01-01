@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>Created new device with serial number {{ serial_no }}</p>
+    <p>Created new device with serial number {{ device.serial_no }}</p>
+    <a href="/device/create?copy-id={{ device.id }}">Create Similar</a>
 {% endblock %}
