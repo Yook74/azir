@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Identifier</th>
+      <th scope="col">Status</th>
+      <th scope="col">Completed Tasks</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for device in devices %}
+    <tr>
+      <th scope="row"><a href="/device/{{ device.id }}">{{ device.serial_no }}</a></th>
+      <td>{{ device.status.short_name }}</td>
+      <td>{{ device.completed_tasks|length }} / {{ device.tasks|length }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

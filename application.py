@@ -31,7 +31,8 @@ if config.reset_db:
         db.create_all()
 
         for short_name, long_name in (
-            ('Backlog', 'Waiting for me to have time'), ('To-Do', 'Gong to work on it soon'),
+            ('Backlog', 'Waiting for me to have time'),
+            ('To-Do', 'Gong to work on it soon'),
             ('In Progress', 'I\'ve started working on it'),
             ('Outprocessing', 'Work is completed and I\'m trying to find a home for it'),
             ('Gone', 'Shipped or given out')

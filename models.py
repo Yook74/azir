@@ -12,10 +12,15 @@ class Device(db.Model):
     tasks = db.relationship('Task', backref='device')
     properties = db.relationship('DeviceProperty', backref='device')
 
+    @property
+    def completed_tasks(self):
+        return [task for task in self.tasks if task.completed]
+
 
 class DeviceStatus(db.Model):
     """Basically an enum"""
     id = db.Column(db.Integer(), primary_key=True)
+    short_name = db.Column(db.String(16), nullable=False)
     short_name = db.Column(db.String(16), nullable=False)
     long_name = db.Column(db.String(64), nullable=False)
 

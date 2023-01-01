@@ -16,6 +16,6 @@ def by_id(model_class):
     return decorator
 
 
-from routes import device, operation, task, property
+from routes import device, operation, task, property, root
 
-blueprints = [device.bluep, operation.bluep, task.bluep, property.bluep]
+blueprints = [device.bluep, operation.bluep, task.bluep, property.bluep, root.bluep]
