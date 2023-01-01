@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-3">
+    <form>
+        <label for="status" class="h5">Status</label>
+        <select class="form-select" id="status" onchange="updateStatus()">
+            {% for status in statuses %}
+            <option {% if device.status == status %}selected{% endif %} value={{ status.id }}>{{ status.short_name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+<div class="row mb-3">
+    <h3 class="h3">Tasks</h3>
+    {% for task in device.tasks %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox"
+             value="{{ task.operation_id }}" {% if task.completed %}checked{% endif %} id="task{{ task.operation_id }}"
+             onchange="updateTask({{ task.operation_id }})">
+
+      <label class="form-check-label" for="task{{ task.operation_id }}">
+          <a href="/operation/{{ task.operation_id }}">{{ task.operation.name }}</a>
+      </label>
+    </div>
+    {% endfor %}
+</div>
+<div class="row mb-3">
+    <form action="/task/create" method="post">
+        <label for="operation" class="form-label">Add Task</label>
+        <input class="form-control" list="operations" name="operationName" id="operation" placeholder="Enter operation">
+        <datalist id="operations">
+            {% for operation in operations %}
+            <option value="{{ operation.name }}"></option>
+            {% endfor %}
+        </datalist>
+        <input hidden type="text" value="{{ device.id }}" name="deviceId">
+        <button type="submit" class="btn btn-primary mt-2">Add</button>
+    </form>
+</div>
+<div class="row mb-3">
+    <h3>Properties</h3>
+    <ul class="list-group">
+    {% for property in device.properties %}
+        {% set link=property.value.startswith('http') %}
+        <li class="list-group-item">
+            <strong>{{ property.key }}:</strong>
+            {% if link %}<a href="{{ property.value }}">{% endif %}{{ property.value }}{% if link %}</a>{% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateStatus(){
+        $.post({
+            url: '/device/{{ device.id }}/status',
+            data: {statusId: $('#status').val()}
+        })
+    }
+
+    function updateTask(operationId){
+        const endpoint = $('#task' + operationId)[0].checked ? '/complete' : '/uncomplete';
+        $.post({
+            url: '/task/' + {{ device.id }} + '/' + operationId + endpoint
+        })
+    }
+</script>
+{% endblock %}

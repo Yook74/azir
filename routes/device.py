@@ -55,5 +55,15 @@ def device_search_result():
 def device_ticket(device):
     return render_template(
         'device_ticket.html',
-        device=device, statuses=DeviceStatus.query.all(), operations=Operation.query.all()
+        device=device, statuses=DeviceStatus.query.all(),
+        operations=Operation.query.filter(Operation.id.not_in([task.operation_id for task in device.tasks])).all()
     )
+
+
+@bluep.post('<int:id>/status')
+@by_id(Device)
+def update_status(device):
+    device.status_id = int(request.form['statusId'])
+    db.session.commit()
+
+    return "updated"
