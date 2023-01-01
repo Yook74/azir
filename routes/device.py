@@ -1,12 +1,17 @@
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, render_template, request, redirect
+from werkzeug.exceptions import NotFound
 
-from models import db, Device
+from models import *
+
+from routes import by_id
 
 bluep = Blueprint('device', __name__, url_prefix='/device/')
+
 
 @bluep.get('create')
 def create_device_form():
     return render_template('device_intake.html')
+
 
 @bluep.post('create')
 def create_device_submit():
@@ -22,6 +27,25 @@ def create_device_submit():
     db.session.commit()
     return render_template('device_created.html', serial_no=new_serial_no)
 
-@bluep.route('<int:device_id>/tasks')
-def device_tasks(device_id: int):
-    return jsonify([])
+
+@bluep.get('search')
+def device_search_page():
+    return render_template('device_search.html')
+
+
+@bluep.post('search')
+def device_search_result():
+    device = Device.query.filter_by(serial_no=request.form['serialNo']).first()
+    if device is None:
+        raise NotFound()
+
+    return redirect(f'{device.id}')
+
+
+@bluep.get('<int:id>')
+@by_id(Device)
+def device_ticket(device):
+    return render_template(
+        'device_ticket.html',
+        device=device, statuses=DeviceStatus.query.all(), operations=Operation.query.all()
+    )
