@@ -23,10 +23,10 @@ def create_device_submit():
         while str(new_serial_no) in all_serial_nos:
             new_serial_no += 1
 
-    new_device = Device(serial_no=new_serial_no, status_id=0)
+    new_device = Device(serial_no=new_serial_no, status_id=1)
     db.session.add(new_device)
 
-    if len(new_serial_no) == 7:
+    if len(str(new_serial_no)) == 7:
         db.session.add(DeviceProperty(
             device=new_device, key='Dell Support Page',
             value=f'https://www.dell.com/support/home/en-us/product-support/servicetag/{new_serial_no}/overview'
