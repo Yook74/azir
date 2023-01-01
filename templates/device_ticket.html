@@ -49,6 +49,22 @@
     {% endfor %}
     </ul>
 </div>
+<div class="row mb-3">
+    <form action="/property/create" method="post">
+        <div class="row">
+            <div class="col-3">
+                <label for="propertyKey" class="form-label">New Property Key</label>
+                <input class="form-control" name="key" id="propertyKey">
+            </div>
+            <div class="col-9">
+                <label for="propertyValue" class="form-label">New Property Value</label>
+                <input class="form-control" name="value" id="propertyValue">
+            </div>
+        </div>
+        <input hidden type="text" value="{{ device.id }}" name="deviceId">
+        <button type="submit" class="btn btn-primary mt-2">Add</button>
+    </form>
+</div>
 {% endblock %}
 
 {% block scripts %}
