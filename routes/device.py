@@ -17,13 +17,21 @@ def create_device_form():
 def create_device_submit():
     values = request.values.to_dict()
     new_serial_no = values['serial-number']
-    if (not new_serial_no):
+    if not new_serial_no:
         all_serial_nos = set([device.serial_no for device in Device.query])
         new_serial_no = 1
         while str(new_serial_no) in all_serial_nos:
             new_serial_no += 1
-    new_device = Device(serial_no=new_serial_no)
+
+    new_device = Device(serial_no=new_serial_no, status_id=0)
     db.session.add(new_device)
+
+    if len(new_serial_no) == 7:
+        db.session.add(DeviceProperty(
+            device=new_device, key='Dell Support Page',
+            value=f'https://www.dell.com/support/home/en-us/product-support/servicetag/{new_serial_no}/overview'
+        ))
+
     db.session.commit()
     return render_template('device_created.html', serial_no=new_serial_no)
 
