@@ -38,6 +38,8 @@ if config.reset_db:
         ):
             db.session.add(DeviceStatus(short_name=short_name, long_name=long_name))
 
+        db.session.commit()
+
 
 if __name__ == '__main__':
     application.run()
