@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="create" method="post">
+{#        <input type="radio" id="serial" name="serial">#}
+{#        <label for="serial">I have a serial number</label>#}
+{#        <br>#}
+        <input type="text" placeholder="Serial number" name="serial-number">
+        <br><br>
+{#        <input type="radio" id="no-serial" name="no-serial">#}
+{#        <label for="no-serial">I do not have a serial number</label>#}
+{#        <br><br>#}
+        <input type="submit" value="Create device">
+    </form>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
