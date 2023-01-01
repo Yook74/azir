@@ -9,3 +9,7 @@ It's named after Brandon Sanderson's race of bookkeepers.
 - As a manager, I want to export the exact steps that were taken on each device to a customer.
 - As a manager, I want to export the specs of each device to a customer.
 - As a manager, I want to see the overall high-level status of my work in progress.
+
+## Development notes
+We made this in an afternoon. 
+It's very bare-bones.
