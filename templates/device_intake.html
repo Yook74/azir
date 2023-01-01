@@ -4,9 +4,35 @@
     <form action="create" method="post">
         <label for="serialNo" class="form-control">Identifier (Service Tag/Serial Number)</label>
         <input type="text" id="serialNo" class="form-control" placeholder="Optional" name="serial-number">
+        <fieldset id="properties">
+            <legend>Properties</legend>
+            <label for="key-1" class="form-control">Key 1</label>
+            <input type="text" id="key-1" class="form-control" name="property">
+            <label for="value-1" class="form-control">Value 1</label>
+            <input type="text" id="value-1" class="form-control" name="property">
+        </fieldset><br><br>
+        <button type="button" class="btn btn-secondary" id="add-property">+ Add Property</button>
+        <br><br>
         <button type="submit" class="btn btn-primary mt-2">Create device</button>
     </form>
 {% endblock %}
 
 {% block scripts %}
+    <script>
+        let counter = 1;
+
+        $('#add-property').on('click', () => {
+            {#console.log($("#properties").lastElementChild);#}
+            {#console.log($("#properties > input"));#}
+            counter++;
+            const num = counter;
+            const key = `key-${num}`;
+            const value = `value-${num}`;
+            const newProperty = `<label for=${key} class="form-control">Key ${num}</label>
+            <input type="text" id=${key} class="form-control" name="property">
+            <label for=${value} class="form-control">Value ${num}</label>
+            <input type="text" id=${value} class="form-control" name="property">`
+            $("#properties").append(newProperty);
+        })
+    </script>
 {% endblock %}

@@ -33,6 +33,14 @@ def create_device_submit():
         ))
 
     db.session.commit()
+
+    device = Device.query.filter_by(serial_no=new_serial_no).first()
+    properties = request.form.getlist('property')
+    for i in range(0, len(properties) - 1, 2):
+        device_property = DeviceProperty(device_id=device.id, key=properties[i], value=properties[i + 1])
+        db.session.add(device_property)
+    db.session.commit()
+
     return render_template('device_created.html', serial_no=new_serial_no)
 
 
