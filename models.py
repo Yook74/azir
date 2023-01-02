@@ -16,6 +16,12 @@ class Device(db.Model):
     def completed_tasks(self):
         return [task for task in self.tasks if task.completed]
 
+    def __lt__(self, other):
+        if other.status_id != self.status_id:
+            return self.status_id < other.status_id
+        else:
+            return len(self.completed_tasks) / (len(self.tasks) or 0.1) < len(other.completed_tasks) / (len(other.tasks) or 0.1)
+
 
 class DeviceStatus(db.Model):
     """Basically an enum"""
