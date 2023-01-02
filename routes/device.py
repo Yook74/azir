@@ -10,17 +10,21 @@ bluep = Blueprint('device', __name__, url_prefix='/device/')
 
 @bluep.get('create')
 def create_device_form():
+    context = dict(
+        copy_device=None,
+        goals=Goal.query.all()
+    )
+
     if 'copy-id' in request.args:
-        return render_template('device_intake.html',
-                               copy_device=Device.query.filter_by(id=request.args['copy-id']).first())
-    else:
-        return render_template('device_intake.html', copy_device=None)
+        context['copy_device'] = Device.query.filter_by(id=request.args['copy-id']).first()
+
+    return render_template('device_intake.html', **context)
 
 
 @bluep.post('create')
 def create_device_submit():
     values = request.values.to_dict()
-    new_serial_no = values['serial-number']
+    new_serial_no = values['serial-number'].upper()
     if not new_serial_no:
         all_serial_nos = set([device.serial_no for device in Device.query])
         new_serial_no = 1
@@ -36,14 +40,17 @@ def create_device_submit():
             value=f'https://www.dell.com/support/home/en-us/product-support/servicetag/{new_serial_no}/overview'
         ))
 
-    db.session.commit()
-
-    device = Device.query.filter_by(serial_no=new_serial_no).first()
     properties = request.form.getlist('property')
-    for i in range(0, len(properties) - 1, 2):
-        device_property = DeviceProperty(device_id=device.id, key=properties[i], value=properties[i + 1])
-        if device_property.key:
+    for i in range(0, len(properties), 2):
+        if properties[i].strip():  # if the key is something
+            device_property = DeviceProperty(device=new_device, key=properties[i], value=properties[i + 1])
             db.session.add(device_property)
+
+    for key in filter(lambda key_: key_.startswith('goal'), request.form):
+        goal_id = int(key.replace('goal', ''))
+        goal = Goal.query.filter_by(id=goal_id).first()
+        for operation in goal.operations:
+            db.session.add(Task(operation=operation, device=new_device))
 
     db.session.commit()
 

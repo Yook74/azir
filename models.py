@@ -21,7 +21,6 @@ class DeviceStatus(db.Model):
     """Basically an enum"""
     id = db.Column(db.Integer(), primary_key=True)
     short_name = db.Column(db.String(16), nullable=False)
-    short_name = db.Column(db.String(16), nullable=False)
     long_name = db.Column(db.String(64), nullable=False)
 
 
@@ -33,10 +32,22 @@ class DeviceProperty(db.Model):
     value = db.Column(db.String(64), nullable=False)
 
 
+class Goal(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(16), nullable=False)
+
+
 class Operation(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
+    goal_id = db.Column(db.Integer(), db.ForeignKey('goal.id'))
+    order = db.Column(db.Integer(), nullable=False)
     name = db.Column(db.String(64), nullable=False)
     description = db.Column(db.Text())
+
+    goal = db.relationship('Goal', backref='operations')
+
+    def __lt__(self, other) -> bool:
+        return self.order < other.order
 
 
 class Task(db.Model):
@@ -45,3 +56,6 @@ class Task(db.Model):
     completed = db.Column(db.Boolean(), default=False)
 
     operation = db.relationship('Operation', uselist=False, backref='tasks')
+
+    def __lt__(self, other):
+        return self.operation < other.operation

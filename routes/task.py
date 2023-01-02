@@ -1,32 +1,46 @@
+from functools import wraps
+
 from flask import Blueprint, request, redirect
 from werkzeug.exceptions import BadRequest, NotFound
 
 from models import *
-from routes import by_id
 
 bluep = Blueprint('task', __name__, url_prefix='/task/')
 
 
-@bluep.post('<int:device_id>/<int:operation_id>/complete')
-def complete_task(device_id, operation_id):
-    task = Task.query.filter_by(device_id=device_id, operation_id=operation_id).first()
-    if task is None:
-        raise NotFound()
+def task_by_ids(route):
+    @wraps(route)
+    def wrapper(device_id, operation_id):
+        task = Task.query.filter_by(device_id=device_id, operation_id=operation_id).first()
+        if task is None:
+            raise NotFound()
 
+        return route(task)
+    return wrapper
+
+
+@bluep.post('<int:device_id>/<int:operation_id>/complete')
+@task_by_ids
+def complete_task(task):
     task.completed = True
     db.session.commit()
     return 'completed'
 
 
 @bluep.post('<int:device_id>/<int:operation_id>/uncomplete')
-def uncomplete_task(device_id, operation_id):
-    task = Task.query.filter_by(device_id=device_id, operation_id=operation_id).first()
-    if task is None:
-        raise NotFound()
-
+@task_by_ids
+def uncomplete_task(task):
     task.completed = False
     db.session.commit()
     return 'uncompleted'
+
+
+@bluep.post('<int:device_id>/<int:operation_id>/delete')
+@task_by_ids
+def delete_task(task):
+    db.session.delete(task)
+    db.session.commit()
+    return 'deleted'
 
 
 @bluep.post('create')

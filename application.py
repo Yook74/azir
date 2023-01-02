@@ -3,7 +3,7 @@ from os import path
 from flask import Flask
 
 from routes import blueprints
-from models import db, DeviceStatus
+from models import db, DeviceStatus, Goal
 
 
 class AppConfig:
@@ -38,6 +38,9 @@ if config.reset_db:
             ('Gone', 'Shipped or given out')
         ):
             db.session.add(DeviceStatus(short_name=short_name, long_name=long_name))
+
+        for name in ('Clean', 'Test', 'Characterize', 'Update', 'Mechanical', 'Install OS'):
+            db.session.add(Goal(name=name))
 
         db.session.commit()
 
