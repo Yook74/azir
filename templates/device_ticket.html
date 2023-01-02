@@ -12,15 +12,17 @@
 </div>
 <div class="row mb-3">
     <h3 class="h3">Tasks</h3>
-    {% for task in device.tasks %}
+    {% for task in device.tasks|sort %}
     <div class="form-check">
-      <input class="form-check-input" type="checkbox"
-             value="{{ task.operation_id }}" {% if task.completed %}checked{% endif %} id="task{{ task.operation_id }}"
-             onchange="updateTask({{ task.operation_id }})">
+        <input class="form-check-input" type="checkbox"
+               value="{{ task.operation_id }}" {% if task.completed %}checked{% endif %} id="task{{ task.operation_id }}"
+               onchange="updateTask({{ task.operation_id }})">
 
-      <label class="form-check-label" for="task{{ task.operation_id }}">
-          <a href="/operation/{{ task.operation_id }}">{{ task.operation.name }}</a>
-      </label>
+        <label class="form-check-label" for="task{{ task.operation_id }}">
+            <a href="/operation/{{ task.operation_id }}">{{ task.operation.name }}</a>
+        </label>
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="removeTask({{ task.operation_id }})">X</button>
+
     </div>
     {% endfor %}
 </div>
@@ -79,7 +81,14 @@
     function updateTask(operationId){
         const endpoint = $('#task' + operationId)[0].checked ? '/complete' : '/uncomplete';
         $.post({
-            url: '/task/' + {{ device.id }} + '/' + operationId + endpoint
+            url: '/task/{{ device.id }}/' + operationId + endpoint
+        })
+    }
+
+    function removeTask(operationId){
+        $.post({
+            url: '/task/{{ device.id }}/' + operationId + '/delete',
+            success: () => location.reload()
         })
     }
 </script>

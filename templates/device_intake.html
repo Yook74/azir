@@ -4,10 +4,22 @@
     <form action="create" method="post">
         <label for="serialNo" class="form-control">Identifier (Service Tag/Serial Number)</label>
         <input type="text" id="serialNo" class="form-control" placeholder="Optional" name="serial-number">
+
         <fieldset id="properties" class="mt-2">
             <legend>Properties</legend>
         </fieldset>
         <button type="button" class="btn btn-secondary" id="add-property">+ Add Property</button><br>
+
+        <fieldset>
+            <legend>Goals</legend>
+            {% for goal in goals %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" checked name="goal{{ goal.id }}" id="goal{{ goal.id }}">
+                <label class="form-check-label" for="goal{{ goal.id }}">{{ goal.name }}</label>
+            </div>
+            {% endfor %}
+        </fieldset>
+
         <button type="submit" class="btn btn-primary mt-2">Create device</button>
     </form>
 {% endblock %}
