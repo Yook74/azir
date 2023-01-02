@@ -24,7 +24,7 @@ def create_device_form():
 @bluep.post('create')
 def create_device_submit():
     values = request.values.to_dict()
-    new_serial_no = values['serial-number']
+    new_serial_no = values['serial-number'].upper()
     if not new_serial_no:
         all_serial_nos = set([device.serial_no for device in Device.query])
         new_serial_no = 1
