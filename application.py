@@ -39,7 +39,7 @@ if config.reset_db:
         ):
             db.session.add(DeviceStatus(short_name=short_name, long_name=long_name))
 
-        for name in ('Clean', 'Test', 'Characterize', 'Update', 'Mechanical', 'Install OS'):
+        for name in ('Clean', 'Test', 'Update', 'Mechanical', 'Install OS'):
             db.session.add(Goal(name=name))
 
         db.session.commit()
