@@ -44,24 +44,29 @@
     <h3>Properties</h3>
     <ul class="list-group">
     {% for property in device.properties %}
-        {% set link=property.value.startswith('http') %}
+        {% set link = property.value.startswith('http') or property.file_contents %}
+        {% set value_url = '/property/{0}/file'.format(property.id) if property.file_contents else property.value %}
         <li class="list-group-item">
             <strong>{{ property.key }}:</strong>
-            {% if link %}<a href="{{ property.value }}">{% endif %}{{ property.value }}{% if link %}</a>{% endif %}
+            {% if link %}<a href="{{ value_url }}">{% endif %}{{ property.value }}{% if link %}</a>{% endif %}
         </li>
     {% endfor %}
     </ul>
 </div>
 <div class="row mb-3">
-    <form action="/property/create" method="post">
+    <form action="/property/create" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-3">
                 <label for="propertyKey" class="form-label">New Property Key</label>
                 <input class="form-control" name="key" id="propertyKey">
             </div>
-            <div class="col-9">
+            <div class="col-6">
                 <label for="propertyValue" class="form-label">New Property Value</label>
                 <input class="form-control" name="value" id="propertyValue">
+            </div>
+            <div class="col-3">
+                <label for="fileInput" class="form-label">Upload File</label>
+                <input class="form-control" type="file" id="fileInput" name="file">
             </div>
         </div>
         <input hidden type="text" value="{{ device.id }}" name="deviceId">

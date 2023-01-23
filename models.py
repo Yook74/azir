@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import deferred
 
 db = SQLAlchemy()
 
@@ -36,6 +37,7 @@ class DeviceProperty(db.Model):
     device_id = db.Column(db.Integer, db.ForeignKey('device.id'))
     key = db.Column(db.String(16), nullable=True)
     value = db.Column(db.String(64), nullable=False)
+    file_contents = deferred(db.Column(db.LargeBinary, nullable=True))
 
 
 class Goal(db.Model):
