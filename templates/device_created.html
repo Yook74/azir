@@ -2,5 +2,8 @@
 
 {% block content %}
     <p>Created new device with serial number {{ device.serial_no }}</p>
-    <a href="/device/create?copy-id={{ device.id }}">Create Similar</a>
+    <ul>
+        <li><a href="/device/{{ device.id }}">View Page</a></li>
+        <li><a href="/device/create?copy-id={{ device.id }}">Create Similar</a></li>
+    </ul>
 {% endblock %}
