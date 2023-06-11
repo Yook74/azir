@@ -31,7 +31,7 @@ def create_device_submit():
         while str(new_serial_no) in all_serial_nos:
             new_serial_no += 1
 
-    new_device = Device(serial_no=new_serial_no, status_id=2)
+    new_device = Device(serial_no=new_serial_no, status_id=2, recipient=values['recipient'])
     db.session.add(new_device)
 
     if len(str(new_serial_no)) == 7:
@@ -85,6 +85,15 @@ def device_ticket(device):
 @by_id(Device)
 def update_status(device):
     device.status_id = int(request.form['statusId'])
+    db.session.commit()
+
+    return "updated"
+
+
+@bluep.post('<int:id>/recipient')
+@by_id(Device)
+def update_recipient(device):
+    device.recipient = request.form['recipient']
     db.session.commit()
 
     return "updated"

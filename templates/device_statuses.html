@@ -7,6 +7,7 @@
       <th scope="col">Identifier</th>
       <th scope="col">Status</th>
       <th scope="col">Completed Tasks</th>
+      <th scope="col">Recipient</th>
     </tr>
   </thead>
   <tbody>
@@ -15,6 +16,7 @@
       <th scope="row"><a href="/device/{{ device.id }}">{{ device.serial_no }}</a></th>
       <td>{{ device.status.short_name }}</td>
       <td>{{ device.completed_tasks|length }} / {{ device.tasks|length }}</td>
+      <td>{{ device.recipient if device.recipient is not none }}</td>
     </tr>
     {% endfor %}
   </tbody>

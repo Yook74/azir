@@ -8,6 +8,7 @@ class Device(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     serial_no = db.Column(db.String(32), nullable=False, unique=True)
     status_id = db.Column(db.Integer(), db.ForeignKey('device_status.id'))
+    recipient = db.Column(db.String(128))
 
     status = db.relationship('DeviceStatus', backref='devices')
     tasks = db.relationship('Task', backref='device')

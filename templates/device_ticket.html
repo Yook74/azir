@@ -41,6 +41,12 @@
     </form>
 </div>
 <div class="row mb-3">
+    <form onsubmit="return false">
+        <label for="recipient" class="h5">Intended Recipient</label>
+        <input class="form-control" id="recipient" value="{{ device.recipient if device.recipient is not none }}" onchange="updateRecipient()">
+    </form>
+</div>
+<div class="row mb-3">
     <h3>Properties</h3>
     <ul class="list-group">
     {% for property in device.properties %}
@@ -81,6 +87,13 @@
         $.post({
             url: '/device/{{ device.id }}/status',
             data: {statusId: $('#status').val()}
+        })
+    }
+
+    function updateRecipient(){
+        $.post({
+            url: '/device/{{ device.id }}/recipient',
+            data: {recipient: $('#recipient').val()}
         })
     }
 
