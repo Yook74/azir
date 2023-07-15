@@ -64,7 +64,7 @@ def device_search_page():
 
 @bluep.post('search')
 def device_search_result():
-    device = Device.query.filter_by(serial_no=request.form['serialNo']).first()
+    device = Device.query.filter(Device.serial_no.contains(request.form['serialNo'].upper())).first()
     if device is None:
         raise NotFound()
 
