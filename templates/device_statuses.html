@@ -15,7 +15,13 @@
     <tr>
       <th scope="row"><a href="/device/{{ device.id }}">{{ device.serial_no }}</a></th>
       <td>{{ device.status.short_name }}</td>
-      <td>{{ device.completed_tasks|length }} / {{ device.tasks|length }}</td>
+      <td>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: {{ (device.completed_tasks|length / (device.tasks|length or 1)) * 100 }}%">
+            {{ device.completed_tasks|length }} / {{ device.tasks|length }}
+          </div>
+        </div>
+      </td>
       <td>{{ device.recipient if device.recipient is not none }}</td>
     </tr>
     {% endfor %}
