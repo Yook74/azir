@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ device.serial_no }}{% endblock %}
 {% block content %}
-<h1>{{ device.serial_no }}</h1>
+<h1><strong>{{ device.serial_no[:device.unique_name_min_length] }}</strong>{{ device.serial_no[device.unique_name_min_length:] }}</h1>
 <div class="row mb-3">
     <form>
         <label for="status" class="h5">Status</label>

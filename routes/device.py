@@ -25,13 +25,26 @@ def create_device_form():
 def create_device_submit():
     values = request.values.to_dict()
     new_serial_no = values['serial-number'].upper()
+    all_serial_nos = set([device.serial_no for device in Device.query])
+
     if not new_serial_no:
-        all_serial_nos = set([device.serial_no for device in Device.query])
         new_serial_no = 1
         while str(new_serial_no) in all_serial_nos:
             new_serial_no += 1
 
-    new_device = Device(serial_no=new_serial_no, status_id=2, recipient=values['recipient'])
+    new_serial_no = str(new_serial_no)
+    for substring_length in range(len(new_serial_no)):
+        short_name = new_serial_no[:substring_length]
+        if not any(exg_sn.startswith(short_name) for exg_sn in all_serial_nos):
+            break
+
+    for other_device in Device.query.filter_by(Device.serial_no.contains(new_serial_no[:substring_length])):
+        if other_device.short_serial_no in new_serial_no[:substring_length]:
+            other_device.unique_name_min_length = substring_length
+
+    new_device = Device(
+        serial_no=new_serial_no, unique_name_min_length=substring_length, status_id=2, recipient=values['recipient']
+    )
     db.session.add(new_device)
 
     if len(str(new_serial_no)) == 7:

@@ -7,6 +7,7 @@ db = SQLAlchemy()
 class Device(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     serial_no = db.Column(db.String(32), nullable=False, unique=True)
+    unique_name_min_length = db.Column(db.Integer())
     status_id = db.Column(db.Integer(), db.ForeignKey('device_status.id'))
     recipient = db.Column(db.String(128))
 
@@ -17,6 +18,10 @@ class Device(db.Model):
     @property
     def completed_tasks(self):
         return [task for task in self.tasks if task.completed]
+
+    @property
+    def short_serial_no(self):
+        return self.serial_no[:self.unique_name_min_length]
 
     def __lt__(self, other):
         if other.status_id != self.status_id:
