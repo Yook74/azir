@@ -15,7 +15,7 @@ for device in sess.query(Device):
 
     device.unique_name_min_length = substring_length
 
-    for other_device in sess.query(Device).filter_by(Device.serial_no.contains(device.serial_no[:substring_length])):
+    for other_device in sess.query(Device).filter(Device.serial_no.contains(device.serial_no[:substring_length])):
         if other_device.short_serial_no in device.serial_no[:substring_length]:
             other_device.unique_name_min_length = substring_length
 

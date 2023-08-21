@@ -38,7 +38,7 @@ def create_device_submit():
         if not any(exg_sn.startswith(short_name) for exg_sn in all_serial_nos):
             break
 
-    for other_device in Device.query.filter_by(Device.serial_no.contains(new_serial_no[:substring_length])):
+    for other_device in Device.query.filter(Device.serial_no.contains(new_serial_no[:substring_length])):
         if other_device.short_serial_no in new_serial_no[:substring_length]:
             other_device.unique_name_min_length = substring_length
 
