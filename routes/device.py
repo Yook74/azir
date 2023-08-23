@@ -32,6 +32,10 @@ def create_device_submit():
         while str(new_serial_no) in all_serial_nos:
             new_serial_no += 1
 
+    existing_device = db.session.query(Device).filter_by(serial_no=new_serial_no).first()
+    if existing_device:
+        return redirect(f'/device/{existing_device.id}')
+
     new_serial_no = str(new_serial_no)
     for substring_length in range(len(new_serial_no)):
         short_name = new_serial_no[:substring_length]
