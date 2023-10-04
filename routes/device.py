@@ -1,4 +1,7 @@
-from flask import Blueprint, render_template, request, redirect
+from io import BytesIO, StringIO
+import csv
+
+from flask import Blueprint, render_template, request, redirect, send_file
 from werkzeug.exceptions import NotFound
 
 from models import *
@@ -114,3 +117,44 @@ def update_recipient(device):
     db.session.commit()
 
     return "updated"
+
+
+@bluep.get('<int:id>/csv')
+@by_id(Device)
+def get_csv(device):
+    file_handle = StringIO()
+    writer = csv.writer(file_handle)
+    writer.writerow(['Fields', 'Values', 'Notes'])
+
+    def get_property_value(property_names, default):
+        property_names = list(map(str.lower, property_names))
+
+        for property in device.properties:
+            if property.key.lower() in property_names:
+                return property.value
+        else:
+            return default
+
+    for names in [('Nickname',), ('Brand',), ('Model',), ('Serial Number',), ('Also Marketed As',),
+                  ('Tech Specs', 'CPU'), ('User Guide',), ('iFixIt Page',), ('Current RAM', 'RAM'), ('Maximum RAM',),
+                  ('Current Drive', 'SSD', 'Drive'), ('Target Drive',), ('Battery Cycle Count',),
+                  ('Battery Condition', 'Battery'), ('Operating System Installed', 'OS'), ('Target Operating System',),
+                  ('Keyboard Language', 'Keyboard'), ('Software Installed',), ('RT Ticket #',),
+                  ('User Name',), ('Password',)]:
+
+        if names[0] == 'Serial Number':
+            default = device.serial_no
+        elif names[0] == 'User Name':
+            default = 'setup'
+        elif names[0] == 'Password':
+            default = 'cat'
+        else:
+            default = None
+
+        writer.writerow([names[0], get_property_value(names, default)])
+
+    file_handle.seek(0)
+    return send_file(
+        BytesIO(file_handle.read().encode('utf-8')),
+        download_name=device.serial_no + '.csv'
+    )
