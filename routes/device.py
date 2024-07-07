@@ -135,19 +135,25 @@ def get_csv(device):
         else:
             return default
 
-    for names in [('Nickname',), ('Brand',), ('Model',), ('Serial Number',), ('Also Marketed As',),
-                  ('Tech Specs', 'CPU'), ('User Guide',), ('iFixIt Page',), ('Current RAM', 'RAM'), ('Maximum RAM',),
-                  ('Current Drive', 'SSD', 'Drive'), ('Target Drive',), ('Battery Cycle Count',),
-                  ('Battery Condition', 'Battery'), ('Operating System Installed', 'OS'), ('Target Operating System',),
-                  ('Keyboard Language', 'Keyboard'), ('Software Installed',), ('RT Ticket #',),
-                  ('User Name',), ('Password',)]:
+    for names in [('Permission to thank?',), ('In The Possession of', ), ('Brand',), ('Model',), ('Also Marketed As',),
+                  ('Serial Number',), ('RAM', 'Memory'), ('CPU', 'Processor'), ('Current Drive', 'SSD', 'Drive'), ('Battery Cycle Count',),
+                  ('Battery Condition', 'Battery'), ('Operating System Installed', 'OS'), ('Keyboard Language',)]:
 
         if names[0] == 'Serial Number':
             default = device.serial_no
-        elif names[0] == 'User Name':
-            default = 'setup'
-        elif names[0] == 'Password':
-            default = 'cat'
+        elif names[0] == 'Permission to thank?':
+            default = 'yes'
+        elif names[0] == 'In The Possession of':
+            default = 'USER HERE'
+        elif names[0] == 'Brand':
+            if device.serial_no.startswith('5CG'):
+                default = 'HP'
+            elif len(device.serial_no) == 7:
+                default = 'Dell'
+            else:
+                default = None
+        elif names[0] == 'Keyboard Language':
+            default = 'English (US)'
         else:
             default = None
 
